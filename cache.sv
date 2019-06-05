@@ -25,6 +25,6 @@ module cache(input[14:0] address, input[31:0] dataIn [0:3], input rst, output[31
             cache[(address % 4096) + 3] = {1'b1, address[14:12], dataIn[3]};
         end
     end
-    assign hit = (address[31:29] == cache[address % 4096][34:32] && cache[address % 4096][35]) ? 1 : 0;
+    assign hit = (address[14:12] == cache[address % 4096][34:32] && cache[address % 4096][35]) ? 1 : 0;
     assign readData = (hit) ? cache[address][31:0] : dataIn[address[1:0]];
 endmodule
