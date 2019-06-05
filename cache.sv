@@ -1,11 +1,11 @@
 `timescale 1ns/1ns
 
-module cache(input[14:0] address, input[31:0] dataIn [0:3], input clk, rst, output[31:0] readData);
+module cache(input[14:0] address, input[31:0] dataIn [0:3], input rst, output[31:0] readData);
     reg[14:0] counter;
     reg[35:0] cache [0:4095];
     wire hit;
     integer i;
-    always @(posedge clk, posedge rst) begin
+    always @(address, posedge rst) begin
         if (rst) begin
             for (i = 0; i < 4096; i++) begin
                 cache[i] = 0;
