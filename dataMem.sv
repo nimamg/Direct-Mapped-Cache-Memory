@@ -3,6 +3,12 @@
 module dataMem (input [14:0] address, output [31:0] data [0:3]);
     reg [31:0] memory [0:32767];
     wire [14:0] shiftedAdr = {address[14:2], 2'b0};
+    integer i;
+    initial begin
+        for (i = 0; i < 32768; i++) begin
+            memory[i] = i;
+        end
+    end
     assign data [0] = memory [shiftedAdr];
     assign data [1] = memory [shiftedAdr + 1];
     assign data [2] = memory [shiftedAdr + 2];
