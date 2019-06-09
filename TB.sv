@@ -2,31 +2,20 @@
 
 
 module tb();
-    reg [14:0] address;
-    wire [31:0] data [0:3];
-    reg rst;
-    wire [31:0] readData;
-    dataMem memModule (address, data);
-    cache cacheModule (address, data, rst, readData);
+    reg clk = 0, rst = 1;
+    wire [31:0] outData;
+    reg [14:0] address = 15'd1024;
+    wire increment,outDataReady;
+    topLevel UUT(clk, rst, address, outData, increment, outDataReady);
+    always #10 clk = ~clk;
     initial begin
         rst = 1;
-        #10;
+        #20;
         rst = 0;
-        #10;
-        address = 24;
-        #10;
-        address = 25;
-        #10;
-        address = 26;
-        #10;
-        address = 27;
-        #10;
-        address = 28;
-        #10;
-        address = 24;
-        #10;
-        address = 29;
-        #10;
+        while (address < 9216) begin
+            #20;
+            if (increment) address++;
+        end
         $stop;
     end
 endmodule
