@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 
-module cache(input[14:0] address, input[31:0] dataIn [0:3], input rst, output[31:0] readData);
+module cache(input[14:0] address, input[31:0] dataIn [0:3], input rst, output[31:0] readData, output reg miss);
     reg[14:0] counter;
     reg[35:0] cache [0:4095];
     wire hit;
@@ -14,15 +14,18 @@ module cache(input[14:0] address, input[31:0] dataIn [0:3], input rst, output[31
         end
         else if (hit)
             counter <= counter + 1;
+            miss = 0;
         else
             counter <= counter;
+            miss = 1;
     end
     always @(address) begin
         if (!hit) begin
-            cache[address % 4096] = {1'b1, address[14:12], dataIn[0]};
-            cache[(address % 4096) + 1] = {1'b1, address[14:12], dataIn[1]};
-            cache[(address % 4096) + 2] = {1'b1, address[14:12], dataIn[2]};
-            cache[(address % 4096) + 3] = {1'b1, address[14:12], dataIn[3]};
+            writeAdr = {address[11:2], 2'b00};
+            cache[writeAdr] = {1'b1, address[14:12], dataIn[0]};
+            cache[writeAdr + 1] = {1'b1, address[14:12], dataIn[1]};
+            cache[writeAdr + 2] = {1'b1, address[14:12], dataIn[2]};
+            cache[writeAdr + 3] = {1'b1, address[14:12], dataIn[3]};
         end
     end
     assign hit = (address[14:12] == cache[address % 4096][34:32] && cache[address % 4096][35]) ? 1 : 0;
