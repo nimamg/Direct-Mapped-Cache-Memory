@@ -22,7 +22,12 @@ module controller (input clk, rst, miss, dataRdy, output reg outSel, regWrite, m
                 else
                     ns <= cacheWrite;
             end
-            cacheWrite: ns <= addressing;
+            cacheWrite: begin
+                if (dataRdy)
+                    ns <= cacheWrite;
+                else
+                    ns <= addressing;
+            end
             addrInc: ns <= addressing;
         endcase
     end
@@ -49,7 +54,6 @@ module controller (input clk, rst, miss, dataRdy, output reg outSel, regWrite, m
                 regWrite = 1;
                 outSel = 1;
                 outDataReady = 1;
-                increment = 1;
             end
         endcase
     end
